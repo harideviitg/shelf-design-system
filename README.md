@@ -3,24 +3,39 @@
 A native, hand-coded build of the Figma frame `design system website`
 (file `snx6xiWnCSSIDJk8nO2AI4`, node `1:2`).
 
-No build step. No dependencies. No framework runtime. Three files do the work:
+No build step. No dependencies. No framework runtime. A handful of files do
+the work:
 
 ```
 design-system-site/
 ├─ index.html                 the designed page, as real markup
 ├─ assets/
-│  ├─ css/styles.css          tokens + layout + motion   (~19 KB)
-│  ├─ js/app.js               routing, scroll-spy, indicator, drawer  (~9 KB)
+│  ├─ css/styles.css          tokens + layout + motion
+│  ├─ js/app.js               routing, scroll-spy, indicator, drawer
 │  ├─ js/content.js           page registry
+│  ├─ js/search.js            the top-bar search (Cmd/Ctrl+K or "/")
 │  ├─ img/shelf-logo.svg      exported from the Figma file
 │  └─ fonts/README.md         how to get SF Pro in (read this)
 └─ README.md
 ```
 
-Total over the wire, uncompressed and unminified: **52 KB**, of which 5 KB is
-the logo SVG and a good third is comments. Any host's gzip takes it to roughly
-13 KB. First paint does not wait on JavaScript — the Introduction page is
-in the HTML, and `app.js` lifts it out of the DOM to reuse for routing.
+First paint does not wait on JavaScript — the Introduction page is in the
+HTML, and `app.js` lifts it out of the DOM to reuse for routing.
+
+### Top bar: search + Get app
+
+The bar is logo · search · **Get app**. There is no longer an in-bar page nav —
+the sidebar and the search both cover that, and duplicating it a third time in
+the header was redundant.
+
+- **Search** opens with **⌘K** / **Ctrl K** or **`/`**, indexes every page and
+  every `.section[id]` inside them (title, group, and body text), and ranks an
+  exact or prefix title match above a body-text hit so typing a page name
+  always surfaces that page first. Arrow keys move the selection, Enter
+  navigates, Escape closes. The index is built from `content.js` at boot, so a
+  page you add there is searchable with no extra registration.
+- **Get app** ([index.html](index.html), `data-role="get-app"`) is a plain
+  anchor — point its `href` at your App Store / TestFlight / waitlist link.
 
 ---
 

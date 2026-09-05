@@ -186,50 +186,169 @@ a { color: inherit; text-decoration: none; }
 /* -----------------------------------------------------------------------------
    4. TOPBAR - node 1:3
 -------------------------------------------------------------------------- */
+/* Three tracks, and the outer two are equal fractions, so the search sits on
+   the true centre line of the page rather than midway between whatever the
+   logo and the button happen to measure. min-width:0 everywhere lets the whole
+   row compress instead of overflowing on a phone. */
 .topbar {
+  position: relative;
+  z-index: 20;                        /* the results panel overlaps the shell */
   flex: 0 0 var(--topbar-h);
   height: var(--topbar-h);
   padding-inline: var(--gutter);
-  display: flex;
+  display: grid;
+  /* The centre track is sized explicitly. An `auto` track here is circular -
+     it asks the search how wide it wants to be, the search answers "100% of
+     the track", and both settle on whatever max-content happens to be. */
+  grid-template-columns: 1fr min(420px, 100%) 1fr;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
 }
 
-.topbar__left  { display: flex; align-items: center; gap: 22px; }  /* 1:4  */
-.topbar__right { display: flex; align-items: center; gap: 22px; }  /* 1:16 */
+.topbar__left   { justify-self: start;  display: flex; align-items: center; gap: 22px; min-width: 0; }
+.topbar__center { justify-self: center; position: relative; width: 100%; max-width: 420px; min-width: 0; }
+.topbar__right  { justify-self: end;    display: flex; align-items: center; gap: 12px; min-width: 0; }
 
 .logo { display: block; flex: none; }
 .logo img { width: 68px; height: 21.033px; }                       /* 1:5  */
 
-.topnav { display: flex; align-items: center; gap: 22px; }
+/* --- search ------------------------------------------------------------- */
 
-.topnav__link,
-.topbar__section {
-  font-size: var(--t-12);
-  line-height: var(--lh-12);
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 32px;
+  padding-inline: 10px 8px;
+  gap: 8px;
+  border-radius: var(--r-pill);
+  background: var(--c-hover);
+  transition: background-color var(--dur-hover) var(--ease-pin),
+              box-shadow var(--dur-hover) var(--ease-pin);
+}
+.search:hover { background: var(--c-current); }
+.search:focus-within {
+  background: var(--c-shell);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.10), 0 6px 20px -8px rgb(0 0 0 / 0.22);
+}
+
+.search__icon { flex: none; width: 15px; height: 15px; color: var(--c-toc-near); }
+
+.search__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  font: inherit;
+  font-size: var(--t-13);
+  line-height: var(--lh-13);
+  color: var(--c-item-strong);
+}
+.search__input::placeholder { color: var(--c-topnav); }
+.search__input::-webkit-search-cancel-button { display: none; }
+
+.search__kbd {
+  flex: none;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--c-shell);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.07);
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 14px;
   color: var(--c-topnav);
   white-space: nowrap;
+  transition: opacity var(--dur-1) var(--ease-1);
 }
+.search:focus-within .search__kbd { opacity: 0; }
 
-.topnav__link { position: relative; transition: color var(--dur-hover) var(--ease-pin); }
-.topnav__link:hover,
-.topnav__link.is-current { color: var(--c-item-strong); }
+/* --- results ------------------------------------------------------------ */
 
-/* underline wipes in from the left - derived */
-.topnav__link::after {
-  content: "";
+.search__panel {
   position: absolute;
+  top: calc(100% + 8px);
   left: 0;
   right: 0;
-  bottom: -4px;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--dur-hover) var(--ease-pin);
+  max-height: min(420px, 60dvh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px;
+  border-radius: 12px;
+  background: var(--c-shell);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.07), 0 18px 44px -12px rgb(0 0 0 / 0.28);
+  animation: panel-in 160ms var(--ease-1) both;
 }
-.topnav__link:hover::after { transform: scaleX(1); }
+.search__panel[hidden] { display: none; }
+
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.search__hit {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 120ms var(--ease-1);
+}
+.search__hit[aria-selected="true"] { background: var(--c-hover); }
+
+.search__hit-title {
+  font-size: var(--t-13);
+  line-height: var(--lh-13);
+  color: var(--c-item-strong);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search__hit-title mark {
+  background: none;
+  color: inherit;
+  font-weight: var(--w-medium);
+}
+
+.search__hit-context {
+  margin-left: auto;
+  flex: none;
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--c-toc-near);
+}
+
+.search__empty {
+  padding: 14px 10px;
+  font-size: var(--t-13);
+  line-height: var(--lh-13);
+  color: var(--c-topnav);
+}
+
+/* --- get app ------------------------------------------------------------ */
+
+.btn-app {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding-inline: 14px;
+  border-radius: var(--r-pill);
+  background: var(--c-item-strong);
+  color: var(--c-shell);
+  font-size: var(--t-12);
+  line-height: var(--lh-12);
+  font-weight: var(--w-medium);
+  white-space: nowrap;
+  transition: background-color var(--dur-hover) var(--ease-pin),
+              transform var(--dur-hover) var(--ease-pin),
+              box-shadow var(--dur-hover) var(--ease-pin);
+}
+.btn-app:hover {
+  background: #000;
+  box-shadow: 0 6px 18px -8px rgb(0 0 0 / 0.55);
+}
+.btn-app:active { transform: scale(0.97); }
 
 /* hamburger - derived, only exists below the drawer breakpoint */
 .menu-btn {
@@ -628,8 +747,15 @@ a { color: inherit; text-decoration: none; }
   }
 
   .progress { display: none; }
-  .topbar__left { gap: 16px; }
-  .topnav { gap: 18px; }
+  .topbar__left { gap: 14px; }
+
+  /* Equal side tracks cannot hold a hamburger + logo on one side and a short
+     button on the other without overflowing, so below this width the search
+     simply fills the middle track. It reads as centred and never clips. */
+  .topbar { grid-template-columns: auto minmax(0, 1fr) auto; }
+
+  /* No hardware keyboard to press. */
+  .search__kbd { display: none; }
 }
 
 @media (max-width: 720px) {
@@ -645,13 +771,11 @@ a { color: inherit; text-decoration: none; }
     --t-32: 27px; --lh-32: 32px;
     --t-20: 18px; --lh-20: 22px;
   }
-  .topbar__right { display: none; }
-  .topnav__link[href="#principles"] { display: none; }
+  .topbar { gap: 10px; }
+  .btn-app { padding-inline: 12px; }
+  .search { padding-inline: 9px 6px; }
 }
 
-@media (max-width: 400px) {
-  .topnav { display: none; }
-}
 
 /* short viewports: do not strand the head block */
 @media (max-height: 620px) {
@@ -669,23 +793,15 @@ a { color: inherit; text-decoration: none; }
 -------------------------------------------------------------------------- */
 html[data-embed] body { background: var(--c-shell); }
 
-html[data-embed] .topbar { display: none; }
-
+/* The bar is kept: search and Get app are function, not navigation, so the
+   host's own nav does not duplicate them. Only the page frame is dropped. */
 html[data-embed] .shell {
   margin-inline: 0;
   border-radius: 0;
 }
 
-/* Below the drawer breakpoint the hamburger is the only way into the nav, so
-   keep a slim bar for it and drop everything the host already shows. */
-@media (max-width: 899px) {
-  html[data-embed] { --topbar-h: 48px; }
-
-  html[data-embed] .topbar { display: flex; }
-  html[data-embed] .logo,
-  html[data-embed] .topnav,
-  html[data-embed] .topbar__right { display: none; }
-}
+/* The host supplies branding above, so the wordmark is the one redundant bit. */
+html[data-embed] .logo { display: none; }
 
 /* -----------------------------------------------------------------------------
    13. REDUCED MOTION

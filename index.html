@@ -37,15 +37,28 @@
       <img src="assets/img/shelf-logo.svg" alt="Shelf" width="68" height="21">
     </a>
 
-    <nav class="topnav" aria-label="Primary">
-      <a class="topnav__link is-current" href="#/introduction" data-node="1:13">Design system</a>
-      <a class="topnav__link" href="#principles" data-node="1:14">Principles</a>
-      <a class="topnav__link" href="#/get-app" data-node="1:15">Get app</a>
-    </nav>
   </div>
 
-  <div class="topbar__right" data-node="1:16">
-    <span class="topbar__section" data-role="group-label">Foundation</span>
+  <div class="topbar__center">
+    <div class="search" data-role="search">
+      <svg class="search__icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+        <circle cx="7" cy="7" r="4.75" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M10.6 10.6 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <input class="search__input" type="text" data-role="search-input"
+             placeholder="Search" autocomplete="off" spellcheck="false"
+             role="combobox" aria-expanded="false" aria-controls="search-results"
+             aria-autocomplete="list" aria-label="Search the design system">
+      <kbd class="search__kbd" data-role="search-kbd" aria-hidden="true"></kbd>
+    </div>
+
+    <div class="search__panel" id="search-results" role="listbox"
+         aria-label="Search results" hidden data-role="search-panel"></div>
+  </div>
+
+  <div class="topbar__right">
+    <!-- Point this at the App Store / TestFlight / waitlist URL. -->
+    <a class="btn-app" href="#/get-app" data-role="get-app">Get app</a>
   </div>
 </header>
 

@@ -10,6 +10,7 @@
    ========================================================================== */
 
 import { PAGES, DEFAULT_PAGE, renderPage } from './content.js';
+import { initSearch } from './search.js';
 
 /* Which scroller the drawn indicator (Figma node 1:42) reports on.
    'main'    - main-content scroll progress (default: it is the only region on
@@ -76,8 +77,6 @@ const el = {
   thumb:     q('[data-role="sidebar-progress"] > i'),
   menuBtn:   q('.menu-btn'),
   scrim:     q('[data-role="scrim"]'),
-  topLabel:  q('[data-role="group-label"]'),
-  topLinks:  qa('.topnav__link'),
 };
 
 /* The designed page ships as real markup. Lift it into the registry so every
@@ -261,9 +260,6 @@ function syncSidebar(slug) {
     if (match) a.setAttribute('aria-current', 'page');
     else a.removeAttribute('aria-current');
   });
-  el.topLinks.forEach((a) => {
-    a.classList.toggle('is-current', a.getAttribute('href') === `#/${slug}`);
-  });
 }
 
 function restartAnimation(node) {
@@ -287,7 +283,6 @@ function setPage(slug, { rerender = true } = {}) {
 
   state.slug = slug;
   document.title = `${page.title} - Bracket, the Shelf design system`;
-  if (el.topLabel) el.topLabel.textContent = page.top ?? page.group;
 
   syncSidebar(slug);
   measure();
@@ -380,20 +375,6 @@ el.rail?.addEventListener('click', (e) => {
   }
 });
 
-/* Top-bar anchors behave the same, and bounce to the page that owns them. */
-document.querySelector('.topnav')?.addEventListener('click', (e) => {
-  const a = e.target.closest('.topnav__link');
-  if (!a) return;
-  const href = a.getAttribute('href') || '';
-  if (href.startsWith('#/')) return;                 /* page link: let it route */
-  e.preventDefault();
-  const id = href.slice(1);
-  if (!state.sections.some((s) => s.id === id)) setPage(DEFAULT_PAGE);
-  requestAnimationFrame(() => {
-    if (scrollToSection(id)) history.replaceState(null, '', `#/${state.slug}#${id}`);
-  });
-});
-
 /* Sidebar: block the dead entry, and close the drawer after a real pick. */
 el.sidebar?.addEventListener('click', (e) => {
   const a = e.target.closest('.sidenav__item');
@@ -440,3 +421,6 @@ document.fonts?.ready.then(remeasure);
 
 setPage(DEFAULT_PAGE, { rerender: false });
 route();
+
+/* After the Introduction body is attached, so the index sees its sections. */
+initSearch();
