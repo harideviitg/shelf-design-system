@@ -97,9 +97,11 @@
   --c-thumb:       #d0d0d0;  /* 1:42 */
 
   --c-item-strong: #1d1d1d;             /* derived: hover ink, one step past --c-item */
+  --c-item-strong-hover: #000000;       /* derived: .btn-app hover, one step past --c-item-strong */
   --c-hover:       rgb(0 0 0 / 0.040);  /* derived: hover plate over --c-sidebar */
   --c-current:     rgb(0 0 0 / 0.065);  /* derived: current-page plate */
   --c-focus:       #404040;             /* derived: focus ring = --c-item */
+  --c-ring:        rgb(0 0 0 / 0.10);   /* derived: hairline ring on search focus / kbd */
 
   /* --- geometry --- */
   --r-shell:  16px;  /* 1:19 */
@@ -129,6 +131,37 @@
   --dur-hover: 300ms;   /* pinned with the curve */
   --dur-1:     260ms;
   --dur-2:     420ms;
+}
+
+/* -----------------------------------------------------------------------------
+   2b. DARK THEME - derived, not in the source Figma file.
+   Same structure, inverted for legibility: near-black shell/sidebar, light ink,
+   everything else (radii, spacing, motion) untouched.
+-------------------------------------------------------------------------- */
+:root[data-theme="dark"] {
+  --c-divider:     #2a2a2a;
+  --c-shell:       #17171a;
+  --c-sidebar:     #1c1c1f;
+  --c-rail:        #17171a;
+  --c-card:        #222225;
+
+  --c-topnav:      #9a9a9a;
+  --c-eyebrow:     #8a8a8a;
+  --c-item:        #b7b7b7;
+  --c-heading:     #ededed;
+  --c-subtitle:    #a8a8a8;
+  --c-toc-near:    #8f8f8f;
+  --c-toc-far:     #45454a;
+  --c-thumb:       #3a3a3f;
+
+  --c-item-strong: #ffffff;
+  --c-item-strong-hover: #d9d9d9;
+  --c-hover:       rgb(255 255 255 / 0.06);
+  --c-current:     rgb(255 255 255 / 0.10);
+  --c-focus:       #b7b7b7;
+  --c-ring:        rgb(255 255 255 / 0.12);
+
+  color-scheme: dark;
 }
 
 /* -----------------------------------------------------------------------------
@@ -230,7 +263,7 @@ a { color: inherit; text-decoration: none; }
 .search:hover { background: var(--c-current); }
 .search:focus-within {
   background: var(--c-shell);
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.10), 0 6px 20px -8px rgb(0 0 0 / 0.22);
+  box-shadow: 0 0 0 1px var(--c-ring), 0 6px 20px -8px rgb(0 0 0 / 0.22);
 }
 
 .search__icon { flex: none; width: 15px; height: 15px; color: var(--c-toc-near); }
@@ -254,7 +287,7 @@ a { color: inherit; text-decoration: none; }
   padding: 2px 6px;
   border-radius: 5px;
   background: var(--c-shell);
-  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.07);
+  box-shadow: inset 0 0 0 1px var(--c-ring);
   font-family: inherit;
   font-size: 11px;
   line-height: 14px;
@@ -277,7 +310,7 @@ a { color: inherit; text-decoration: none; }
   padding: 6px;
   border-radius: 12px;
   background: var(--c-shell);
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.07), 0 18px 44px -12px rgb(0 0 0 / 0.28);
+  box-shadow: 0 0 0 1px var(--c-ring), 0 18px 44px -12px rgb(0 0 0 / 0.28);
   animation: panel-in 160ms var(--ease-1) both;
 }
 .search__panel[hidden] { display: none; }
@@ -346,10 +379,37 @@ a { color: inherit; text-decoration: none; }
               box-shadow var(--dur-hover) var(--ease-pin);
 }
 .btn-app:hover {
-  background: #000;
+  background: var(--c-item-strong-hover);
   box-shadow: 0 6px 18px -8px rgb(0 0 0 / 0.55);
 }
 .btn-app:active { transform: scale(0.97); }
+
+/* --- theme toggle - derived, sits left of "Get app" ---------------------- */
+
+.theme-toggle {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-pill);
+  color: var(--c-item);
+  transition: background-color var(--dur-hover) var(--ease-pin),
+              color var(--dur-hover) var(--ease-pin);
+}
+.theme-toggle:hover { background: var(--c-hover); color: var(--c-item-strong); }
+
+.theme-toggle__icon {
+  grid-area: 1 / 1;
+  width: 16px;
+  height: 16px;
+  transition: opacity var(--dur-1) var(--ease-1), transform var(--dur-1) var(--ease-1);
+}
+.theme-toggle__icon--moon { opacity: 0; transform: scale(0.6) rotate(-30deg); }
+
+:root[data-theme="dark"] .theme-toggle__icon--sun { opacity: 0; transform: scale(0.6) rotate(30deg); }
+:root[data-theme="dark"] .theme-toggle__icon--moon { opacity: 1; transform: none; }
 
 /* hamburger - derived, only exists below the drawer breakpoint */
 .menu-btn {
@@ -894,7 +954,7 @@ a { color: inherit; text-decoration: none; }
     bottom: 0;
     left: 0;
     z-index: 5;
-    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.04), 24px 0 48px -24px rgb(0 0 0 / 0.20);
+    box-shadow: 0 0 0 1px var(--c-ring), 24px 0 48px -24px rgb(0 0 0 / 0.20);
     transform: translateX(-100%);
     visibility: hidden;
     transition: transform var(--dur-2) var(--ease-2),
