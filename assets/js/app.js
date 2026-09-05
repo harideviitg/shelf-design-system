@@ -12,12 +12,6 @@
 import { PAGES, DEFAULT_PAGE, renderPage } from './content.js';
 import { initSearch } from './search.js';
 
-/* Which scroller the drawn indicator (Figma node 1:42) reports on.
-   'main'    - main-content scroll progress (default: it is the only region on
-               the designed page that actually scrolls)
-   'sidebar' - the sidebar's own scroll position */
-const PROGRESS_TARGET = 'main';
-
 /* Where in the viewport a section counts as "the one you are reading". */
 const READ_LINE = 0.30;
 
@@ -67,16 +61,19 @@ const escapeHtml = (s) => String(s).replace(/[&<>"]/g, (c) =>
 /* ------------------------------------------------------------------- refs */
 
 const el = {
-  sidebar:   q('#sidebar'),
-  navItems:  qa('.sidenav__item'),
-  main:      q('[data-role="scroller"]'),
-  doc:       q('#doc'),
-  rail:      q('.rail'),
-  toc:       q('.toc'),
-  progress:  q('[data-role="sidebar-progress"]'),
-  thumb:     q('[data-role="sidebar-progress"] > i'),
-  menuBtn:   q('.menu-btn'),
-  scrim:     q('[data-role="scrim"]'),
+  sidebar:      q('#sidebar'),
+  sidenav:      q('.sidenav'),               /* the part that actually scrolls */
+  navItems:     qa('.sidenav__item'),
+  main:         q('[data-role="scroller"]'),
+  doc:          q('#doc'),
+  rail:         q('.rail'),
+  toc:          q('.toc'),
+  progressSide: q('[data-role="sidebar-progress"]'),
+  thumbSide:    q('[data-role="sidebar-progress"] > i'),
+  progressMain: q('[data-role="main-progress"]'),
+  thumbMain:    q('[data-role="main-progress"] > i'),
+  menuBtn:      q('.menu-btn'),
+  scrim:        q('[data-role="scrim"]'),
 };
 
 /* The designed page ships as real markup. Lift it into the registry so every
@@ -107,15 +104,14 @@ function measure() {
     top: node.offsetTop,
   }));
 
-  const p = PROGRESS_TARGET === 'sidebar' ? el.sidebar : el.main;
+  const side = el.sidenav;
   state.m = {
-    viewH:    el.main.clientHeight,
-    range:    Math.max(0, el.main.scrollHeight - el.main.clientHeight),
-    trackH:   el.progress ? el.progress.clientHeight : 0,
-    pView:    p.clientHeight,
-    pContent: p.scrollHeight,
-    pRange:   Math.max(0, p.scrollHeight - p.clientHeight),
-    pEl:      p,
+    viewH:        el.main.clientHeight,
+    range:        Math.max(0, el.main.scrollHeight - el.main.clientHeight),
+    mainTrackH:   el.progressMain ? el.progressMain.clientHeight : 0,
+
+    sideRange:    side ? Math.max(0, side.scrollHeight - side.clientHeight) : 0,
+    sideTrackH:   el.progressSide ? el.progressSide.clientHeight : 0,
   };
 }
 
@@ -150,18 +146,25 @@ function paintToc(idx) {
 
 /* ------------------------------------------------------- scroll indicator */
 
-function paintProgress() {
-  if (!el.progress) return;
-  const { trackH, pView, pContent, pRange, pEl } = state.m;
-
-  const live = pRange > 4 && trackH > 0;
-  el.progress.classList.toggle('is-live', live);
+/** Paint one pill: bar element, its track height, the scroller, and the
+    scroller's own overflow range (0 if it does not overflow). */
+function paintBar(bar, trackH, scroller, range) {
+  if (!bar) return;
+  const live = range > 4 && trackH > 0;
+  bar.classList.toggle('is-live', live);
   if (!live) return;
 
-  const h = Math.max(28, Math.min(trackH, trackH * (pView / pContent)));
-  const y = (trackH - h) * (pEl.scrollTop / pRange);
-  el.thumb.style.height = `${h}px`;
-  el.thumb.style.transform = `translate3d(0, ${y}px, 0)`;
+  const view = scroller.clientHeight;
+  const h = Math.max(28, Math.min(trackH, trackH * (view / (view + range))));
+  const y = (trackH - h) * (scroller.scrollTop / range);
+  bar.querySelector('i').style.height = `${h}px`;
+  bar.querySelector('i').style.transform = `translate3d(0, ${y}px, 0)`;
+}
+
+function paintProgress() {
+  const { mainTrackH, sideTrackH, range, sideRange } = state.m;
+  paintBar(el.progressMain, mainTrackH, el.main, range);
+  if (el.sidenav) paintBar(el.progressSide, sideTrackH, el.sidenav, sideRange);
 }
 
 /* -------------------------------------------------------------- the frame */
@@ -411,9 +414,7 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') remeasure();
 });
 
-if (PROGRESS_TARGET === 'sidebar') {
-  el.sidebar?.addEventListener('scroll', onScroll, { passive: true });
-}
+el.sidenav?.addEventListener('scroll', onScroll, { passive: true });
 if ('ResizeObserver' in window) new ResizeObserver(remeasure).observe(el.doc);
 document.fonts?.ready.then(remeasure);
 

@@ -94,7 +94,7 @@
 
     </nav>
 
-    <!-- scroll indicator, node 1:42 -->
+    <!-- tracks the sidebar's own scroll; hidden until the list overflows -->
     <div class="progress progress--sidebar" data-role="sidebar-progress" aria-hidden="true"><i></i></div>
   </aside>
 
@@ -154,6 +154,8 @@
 
   <!-- ---------- RIGHT RAIL / ON THIS PAGE (node 1:58) ---------- -->
   <aside class="rail" data-node="1:58">
+    <!-- tracks the main-content scroll, right where the reading column ends -->
+    <div class="progress progress--main" data-role="main-progress" aria-hidden="true"><i></i></div>
     <nav class="toc" aria-label="On this page" data-node="1:43">
       <a class="toc__item" href="#principles"      data-node="1:44"><span class="toc__label">Principles</span><i class="toc__dash"></i></a>
       <a class="toc__item" href="#whats-in-there"  data-node="1:47"><span class="toc__label">Whats in there?</span><i class="toc__dash"></i></a>

@@ -392,23 +392,31 @@ a { color: inherit; text-decoration: none; }
 /* -----------------------------------------------------------------------------
    6. SIDEBAR - node 1:20 (nav 1:21, indicator 1:42)
 -------------------------------------------------------------------------- */
+/* .sidebar itself does not scroll - .sidenav does, one level in. That keeps
+   the indicator (an absolutely-positioned child of .sidebar) fixed in place
+   while the list scrolls, instead of scrolling away with it. */
 .sidebar {
   position: relative;
   flex: 0 0 var(--sidebar-w);
   width: var(--sidebar-w);
   background: var(--c-sidebar);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidenav {                                                              /* 1:21 */
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  flex: 1 1 auto;
+  min-height: 0;
   padding: 35px 38px;                  /* puts 1:21 at x=38 y=35 */
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--c-thumb) transparent;
+  scrollbar-width: none;               /* replaced by the indicator pill */
 }
-.sidebar::-webkit-scrollbar { width: 3px; }
-.sidebar::-webkit-scrollbar-thumb { background: var(--c-thumb); border-radius: var(--r-pill); }
-.sidebar::-webkit-scrollbar-track { background: transparent; }
-
-.sidenav { display: flex; flex-direction: column; gap: 40px; }         /* 1:21 */
+.sidenav::-webkit-scrollbar { width: 0; height: 0; }
 .sidenav__group { display: flex; flex-direction: column; gap: 19px; }  /* 1:22 1:32 */
 
 .sidenav__label {                                                      /* 1:23 1:33 */
@@ -473,7 +481,6 @@ a { color: inherit; text-decoration: none; }
   position: absolute;
   top: 11px;
   bottom: 11px;
-  right: 4px;                          /* 267 - (260 + 3) */
   width: 3px;
   pointer-events: none;
   opacity: 0;
@@ -481,6 +488,15 @@ a { color: inherit; text-decoration: none; }
   z-index: 2;
 }
 .progress.is-live { opacity: 1; }
+
+/* Sidebar: hugs its inner right edge, same 4px inset the file draws (node
+   1:42: 267 - (260 + 3) = 4). Only shows once the list actually overflows -
+   with today's nine items it stays hidden. */
+.progress--sidebar { right: 4px; }
+
+/* Main: mirrored onto the rail's near edge, so it reads as "the reading
+   column's own scrollbar" rather than living inside either sidebar. */
+.progress--main { left: 4px; }
 .progress > i {
   display: block;
   position: absolute;
