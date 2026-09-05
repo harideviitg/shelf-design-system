@@ -1,0 +1,685 @@
+/* =============================================================================
+   Bracket - the Shelf design system site
+   Figma: snx6xiWnCSSIDJk8nO2AI4 - frame "design system website" (node 1:2)
+
+   Every literal in the TOKENS block is a value read out of the Figma node JSON.
+   Nothing here is measured off a render. Where the file is silent the rule is
+   marked "derived" and the reasoning is stated next to it.
+   ========================================================================== */
+
+/* -----------------------------------------------------------------------------
+   1. FONT - Apple SF Pro
+   The design specifies SF Pro Regular (400), Medium (510) and Light (274).
+   Those fractional weights are instances of the SF Pro *variable* font.
+
+   Drop SF-Pro.woff2 into assets/fonts/ and it is used everywhere. Without it,
+   Apple devices still get real SF via -apple-system and other platforms fall
+   back down the stack. See assets/fonts/README.md.
+-------------------------------------------------------------------------- */
+@font-face {
+  font-family: "SF Pro";
+  src: url("../fonts/SF-Pro.woff2") format("woff2-variations"),
+       url("../fonts/SF-Pro.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SF Pro";
+  src: url("../fonts/SF-Pro-Italic.woff2") format("woff2-variations"),
+       url("../fonts/SF-Pro-Italic.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* -----------------------------------------------------------------------------
+   2. TOKENS
+-------------------------------------------------------------------------- */
+:root {
+  /* --- type --- */
+  --font-sans: "SF Pro", -apple-system, BlinkMacSystemFont, "SF Pro Text",
+               "SF Pro Display", "Helvetica Neue", Inter, Arial, sans-serif;
+
+  --w-light:   274;   /* node 1:83  SF Pro Light   */
+  --w-regular: 400;   /* node 1:13  SF Pro Regular */
+  --w-medium:  510;   /* node 1:82  SF Pro Medium  */
+
+  /* size / line-height pairs. Both halves are confirmed by the node boxes. */
+  --t-12: 12px;  --lh-12: 14px;   /* 1:13 1:23 1:33 1:45 1:81 - box h=14 */
+  --t-13: 13px;  --lh-13: 16px;   /* 1:83                     - box h=16 */
+  --t-14: 14px;  --lh-14: 17px;   /* 1:25..1:31 1:48          - box h=17 */
+  --t-15: 15px;  --lh-15: 21px;   /* 1:86 1:90 - leading pinned in file  */
+  --t-20: 20px;  --lh-20: 24px;   /* 1:93                     - box h=24 */
+  --t-32: 32px;  --lh-32: 38px;   /* 1:82                     - box h=38 */
+
+  /* --- colour --- */
+  --c-page:        #ebebeb;  /* 1:2  */
+  --c-shell:       #ffffff;  /* 1:19 */
+  --c-sidebar:     #f7f7f7;  /* 1:20 */
+  --c-rail:        #ffffff;  /* 1:58 */
+  --c-card:        #f5f5f5;  /* 1:94 */
+
+  --c-topnav:      #6d6d6d;  /* 1:13 1:17 */
+  --c-eyebrow:     #898989;  /* 1:23 1:33 1:81 */
+  --c-item:        #404040;  /* 1:25 1:48 */
+  --c-heading:     #484848;  /* 1:82 1:93 1:86 */
+  --c-subtitle:    #575757;  /* 1:83 */
+  --c-toc-near:    #909090;  /* 1:45 1:51 */
+  --c-toc-far:     #d7d7d7;  /* 1:54 */
+  --c-thumb:       #d0d0d0;  /* 1:42 */
+
+  --c-item-strong: #1d1d1d;             /* derived: hover ink, one step past --c-item */
+  --c-hover:       rgb(0 0 0 / 0.040);  /* derived: hover plate over --c-sidebar */
+  --c-current:     rgb(0 0 0 / 0.065);  /* derived: current-page plate */
+  --c-focus:       #404040;             /* derived: focus ring = --c-item */
+
+  /* --- geometry --- */
+  --r-shell:  16px;  /* 1:19 */
+  --r-card:   16px;  /* 1:94 */
+  --r-plate:   8px;  /* derived */
+  --r-pill:  999px;  /* 1:42 */
+
+  --gutter:      37px;   /* 1:3 padding-x / 1:19 x */
+  --topbar-h:    67px;   /* 1:3  */
+  --sidebar-w:  267px;   /* 1:20 */
+  --rail-w:     267px;   /* 1:58 */
+  --main-pad-x:  50px;   /* 1:98 padding-x */
+  --main-pad-t:  35px;   /* 1:98 y */
+  --main-pad-b:  80px;   /* derived: scroll runway under the last section */
+
+  --doc-w:    732px;  /* 1:97 */
+  --head-w:   494px;  /* 1:87 */
+  --title-w:  298px;  /* 1:85 */
+
+  /* --- motion ---
+     One curve is pinned. The rest are members of the same family so that the
+     whole page decelerates the same way. */
+  --ease-pin: cubic-bezier(0, 0.93, 0, 1);       /* pinned: sidebar hover */
+  --ease-1:   cubic-bezier(0.12, 0.86, 0.16, 1); /* derived: rail, indicators */
+  --ease-2:   cubic-bezier(0.22, 0.78, 0.24, 1); /* derived: drawer, page swap */
+
+  --dur-hover: 300ms;   /* pinned with the curve */
+  --dur-1:     260ms;
+  --dur-2:     420ms;
+}
+
+/* -----------------------------------------------------------------------------
+   3. RESET / BASE
+-------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;                    /* the app shell scrolls, not the page */
+  background: var(--c-page);
+  color: var(--c-heading);
+  font-family: var(--font-sans);
+  font-weight: var(--w-regular);
+  font-size: var(--t-15);
+  line-height: var(--lh-15);
+  font-optical-sizing: auto;
+  font-variation-settings: "wdth" 100; /* pinned on every text node in the file */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, p, ul { margin: 0; }
+ul { padding: 0; list-style: none; }
+img, svg { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--c-focus);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 8px 14px;
+  background: var(--c-shell);
+  border-radius: var(--r-plate);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.12);
+  font-size: var(--t-13);
+  transform: translateY(-200%);
+  transition: transform var(--dur-1) var(--ease-1);
+}
+.skip-link:focus-visible { transform: none; }
+
+/* -----------------------------------------------------------------------------
+   4. TOPBAR - node 1:3
+-------------------------------------------------------------------------- */
+.topbar {
+  flex: 0 0 var(--topbar-h);
+  height: var(--topbar-h);
+  padding-inline: var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.topbar__left  { display: flex; align-items: center; gap: 22px; }  /* 1:4  */
+.topbar__right { display: flex; align-items: center; gap: 22px; }  /* 1:16 */
+
+.logo { display: block; flex: none; }
+.logo img { width: 68px; height: 21.033px; }                       /* 1:5  */
+
+.topnav { display: flex; align-items: center; gap: 22px; }
+
+.topnav__link,
+.topbar__section {
+  font-size: var(--t-12);
+  line-height: var(--lh-12);
+  color: var(--c-topnav);
+  white-space: nowrap;
+}
+
+.topnav__link { position: relative; transition: color var(--dur-hover) var(--ease-pin); }
+.topnav__link:hover,
+.topnav__link.is-current { color: var(--c-item-strong); }
+
+/* underline wipes in from the left - derived */
+.topnav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-hover) var(--ease-pin);
+}
+.topnav__link:hover::after { transform: scaleX(1); }
+
+/* hamburger - derived, only exists below the drawer breakpoint */
+.menu-btn {
+  display: none;
+  width: 26px;
+  height: 26px;
+  margin-left: -4px;
+  border-radius: 6px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.menu-btn__bar {
+  display: block;
+  width: 15px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: var(--c-item);
+  transition: transform var(--dur-1) var(--ease-1);
+}
+.menu-btn[aria-expanded="true"] .menu-btn__bar:first-child { transform: translateY(3.25px) rotate(45deg); }
+.menu-btn[aria-expanded="true"] .menu-btn__bar:last-child  { transform: translateY(-3.25px) rotate(-45deg); }
+
+/* -----------------------------------------------------------------------------
+   5. SHELL - node 1:19
+   1440 - 2*37 = 1366 wide, 1024 - 67 = 957 tall, flush to the bottom edge.
+-------------------------------------------------------------------------- */
+.shell {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-inline: var(--gutter);
+  display: flex;
+  background: var(--c-shell);
+  border-radius: var(--r-shell);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* -----------------------------------------------------------------------------
+   6. SIDEBAR - node 1:20 (nav 1:21, indicator 1:42)
+-------------------------------------------------------------------------- */
+.sidebar {
+  position: relative;
+  flex: 0 0 var(--sidebar-w);
+  width: var(--sidebar-w);
+  background: var(--c-sidebar);
+  padding: 35px 38px;                  /* puts 1:21 at x=38 y=35 */
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-thumb) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--c-thumb); border-radius: var(--r-pill); }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+
+.sidenav { display: flex; flex-direction: column; gap: 40px; }         /* 1:21 */
+.sidenav__group { display: flex; flex-direction: column; gap: 19px; }  /* 1:22 1:32 */
+
+.sidenav__label {                                                      /* 1:23 1:33 */
+  font-size: var(--t-12);
+  line-height: var(--lh-12);
+  font-weight: var(--w-regular);
+  color: var(--c-eyebrow);
+  text-transform: uppercase;
+}
+
+.sidenav__list { display: flex; flex-direction: column; gap: 15px; }   /* 1:24 */
+
+.sidenav__item {                                                       /* 1:25..1:35 */
+  position: relative;
+  display: block;
+  font-size: var(--t-14);
+  line-height: var(--lh-14);
+  color: var(--c-item);
+  white-space: nowrap;
+  transition: color var(--dur-hover) var(--ease-pin);
+}
+.sidenav__item > span { position: relative; z-index: 1; }
+
+/* The rectangular hover plate.
+   -14px against the sidebar's 38px padding lands the plate a symmetric 24px in
+   from both edges of the rail, and clears the 1:42 indicator at x=260. */
+.sidenav__item::before {
+  content: "";
+  position: absolute;
+  inset: -7px -14px;
+  border-radius: var(--r-plate);
+  background: var(--c-hover);
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity var(--dur-hover) var(--ease-pin),
+              transform var(--dur-hover) var(--ease-pin),
+              background-color var(--dur-hover) var(--ease-pin);
+}
+.sidenav__item:hover { color: var(--c-item-strong); }
+.sidenav__item:hover::before { opacity: 1; transform: none; }
+.sidenav__item:active::before { transform: scale(0.985); }
+
+.sidenav__item:focus-visible { outline: none; color: var(--c-item-strong); }
+.sidenav__item:focus-visible::before {
+  opacity: 1;
+  transform: none;
+  outline: 2px solid var(--c-focus);
+}
+
+.sidenav__item[aria-current="page"] { color: var(--c-item-strong); font-weight: var(--w-medium); }
+.sidenav__item[aria-current="page"]::before { opacity: 1; transform: none; background: var(--c-current); }
+
+.sidenav__item.is-disabled { cursor: default; }
+.sidenav__item.is-disabled::before { display: none; }
+.sidenav__item.is-disabled:hover { color: var(--c-item); }
+
+/* Indicator - node 1:42: w3 h89 x260 r999 #d0d0d0.
+   Bound to main-content scroll: it is the only region on this page that
+   scrolls, and the file gives the thumb a length, which only means something
+   if it tracks something. See PROGRESS_TARGET in app.js to rebind it. */
+.progress {
+  position: absolute;
+  top: 11px;
+  bottom: 11px;
+  right: 4px;                          /* 267 - (260 + 3) */
+  width: 3px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-1) var(--ease-1);
+  z-index: 2;
+}
+.progress.is-live { opacity: 1; }
+.progress > i {
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 89px;
+  border-radius: var(--r-pill);
+  background: var(--c-thumb);
+  will-change: transform, height;
+}
+
+/* -----------------------------------------------------------------------------
+   7. MAIN - node 1:98
+-------------------------------------------------------------------------- */
+.main {
+  position: relative;   /* makes .main the offsetParent, so section positions
+                           are read in layout space and are immune to the
+                           entry animation's transform and to scrolling */
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding: var(--main-pad-t) var(--main-pad-x) var(--main-pad-b);
+  scrollbar-width: none;               /* replaced by .progress */
+}
+.main::-webkit-scrollbar { width: 0; height: 0; }
+
+.doc {
+  width: 100%;
+  max-width: var(--doc-w);
+  display: flex;
+  flex-direction: column;
+  gap: 64px;                           /* 1:98 */
+}
+
+/* head - node 1:87, 494 wide */
+.doc__head {
+  width: 100%;
+  max-width: var(--head-w);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.doc__titleblock {                     /* 1:85, 298 wide */
+  width: 100%;
+  max-width: var(--title-w);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.eyebrow {                             /* 1:81 */
+  font-size: var(--t-12);
+  line-height: var(--lh-12);
+  color: var(--c-eyebrow);
+  text-transform: uppercase;
+}
+
+.doc__titles { display: flex; flex-direction: column; gap: 2px; }  /* 1:84 */
+
+.doc__title {                          /* 1:82 */
+  font-size: var(--t-32);
+  line-height: var(--lh-32);
+  font-weight: var(--w-medium);
+  color: var(--c-heading);
+  letter-spacing: 0;
+}
+
+.doc__subtitle {                       /* 1:83 */
+  font-size: var(--t-13);
+  line-height: var(--lh-13);
+  font-weight: var(--w-light);
+  color: var(--c-subtitle);
+}
+
+.prose {                               /* 1:92 */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: var(--t-15);
+  line-height: var(--lh-15);
+  color: var(--c-heading);
+  text-wrap: pretty;
+}
+
+/* sections - node 1:97, 732 wide */
+.section { display: flex; flex-direction: column; gap: 17px; scroll-margin-top: 8px; }
+
+.section__title {                      /* 1:93 */
+  font-size: var(--t-20);
+  line-height: var(--lh-20);
+  font-weight: var(--w-medium);
+  color: var(--c-heading);
+}
+
+.cards {                               /* 1:96 1:99 */
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.card {                                /* 1:94 1:95 1:100 1:101 */
+  min-height: 198px;
+  border-radius: var(--r-card);
+  background: var(--c-card);
+}
+
+/* honest empty state for pages the file does not describe - derived */
+.stub {
+  margin-top: 4px;
+  padding: 20px 22px;
+  border-radius: var(--r-card);
+  background: var(--c-card);
+  color: var(--c-subtitle);
+  font-size: var(--t-13);
+  line-height: 19px;
+  max-width: var(--head-w);
+}
+.stub code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+  color: var(--c-item);
+}
+
+/* -----------------------------------------------------------------------------
+   8. RIGHT RAIL / ON THIS PAGE - node 1:58 (list 1:43)
+   The file draws three states and they are distance-based, not binary:
+     active   #404040  14px  18px rule   (1:47)
+     +/-1     #909090  12px  12px rule   (1:44 1:50)
+     +/-2 up  #d7d7d7  12px  12px rule   (1:53)
+-------------------------------------------------------------------------- */
+.rail {
+  position: relative;
+  flex: 0 0 var(--rail-w);
+  width: var(--rail-w);
+  background: var(--c-rail);
+}
+
+.toc {
+  position: absolute;
+  right: 39px;                              /* 267 - (99 + 129) */
+  top: 50%;
+  transform: translateY(calc(-50% - 24px)); /* reproduces y=407 at h=957 */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;                                /* 1:43 */
+}
+
+.toc__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;                                 /* 1:44 */
+  white-space: nowrap;
+  color: var(--c-toc-far);
+  transition: color var(--dur-1) var(--ease-1);
+}
+
+.toc__label {
+  font-size: var(--t-12);
+  line-height: var(--lh-12);
+  transition: font-size var(--dur-1) var(--ease-1),
+              line-height var(--dur-1) var(--ease-1);
+}
+
+.toc__dash {
+  flex: none;
+  width: 12px;
+  height: 1px;
+  background: currentColor;
+  transition: width var(--dur-1) var(--ease-1);
+}
+
+.toc__item[data-dist="1"] { color: var(--c-toc-near); }
+
+.toc__item[data-dist="0"] { color: var(--c-item); }
+.toc__item[data-dist="0"] .toc__label { font-size: var(--t-14); line-height: var(--lh-14); }
+.toc__item[data-dist="0"] .toc__dash  { width: 18px; }
+
+.toc__item:hover { color: var(--c-item-strong); }
+.toc__item:hover .toc__dash { width: 18px; }
+
+/* -----------------------------------------------------------------------------
+   9. PAGE SWAP - derived
+-------------------------------------------------------------------------- */
+.doc { animation: doc-in var(--dur-2) var(--ease-2) both; }
+@keyframes doc-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* -----------------------------------------------------------------------------
+   10. DRAWER SCRIM - derived
+-------------------------------------------------------------------------- */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: rgb(20 20 20 / 0.28);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;   /* a scrim stuck mid-close can never eat a click */
+  transition: opacity var(--dur-2) var(--ease-2);
+}
+.scrim[hidden] { display: none; }
+.scrim.is-open { opacity: 1; pointer-events: auto; }
+
+/* -----------------------------------------------------------------------------
+   11. RESPONSIVE
+   The file only draws 1440x1024, so everything in this block is derived.
+   At exactly 1440x1024 none of it applies and the render is the file.
+-------------------------------------------------------------------------- */
+
+/* wider than the artboard: let the middle column absorb the extra space */
+@media (min-width: 1600px) {
+  :root { --main-pad-x: 64px; }
+}
+
+/* 1200-1399: common laptop widths (1280, 1366). Tighten the gutters and the
+   rail rather than dropping a column - all three stay on screen. */
+@media (max-width: 1399px) {
+  :root { --gutter: 28px; --main-pad-x: 44px; --rail-w: 232px; }
+  .toc { right: 28px; }
+}
+
+@media (max-width: 1199px) {
+  :root { --gutter: 24px; --main-pad-x: 36px; --sidebar-w: 244px; --rail-w: 196px; }
+  .toc { right: 24px; }
+}
+
+/* Below this the middle column would be narrower than the rail is worth. The
+   rail is pure wayfinding, and the scroll indicator plus the sidebar still
+   answer "where am I". */
+@media (max-width: 1059px) {
+  :root { --main-pad-x: 32px; }
+  .rail { display: none; }
+}
+
+/* sidebar becomes an overlay drawer inside the shell */
+@media (max-width: 899px) {
+  :root { --gutter: 16px; --main-pad-x: 24px; --main-pad-t: 28px; --sidebar-w: 264px; }
+
+  .menu-btn { display: flex; }
+
+  .sidebar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.04), 24px 0 48px -24px rgb(0 0 0 / 0.20);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform var(--dur-2) var(--ease-2),
+                visibility 0s linear var(--dur-2);
+  }
+  .sidebar.is-open {
+    transform: none;
+    visibility: visible;
+    transition: transform var(--dur-2) var(--ease-2), visibility 0s;
+  }
+
+  .progress { display: none; }
+  .topbar__left { gap: 16px; }
+  .topnav { gap: 18px; }
+}
+
+@media (max-width: 720px) {
+  .cards { grid-template-columns: minmax(0, 1fr); }
+  .card { min-height: 168px; }
+  .doc { gap: 48px; }
+}
+
+@media (max-width: 560px) {
+  :root {
+    --gutter: 12px;
+    --main-pad-x: 20px;
+    --t-32: 27px; --lh-32: 32px;
+    --t-20: 18px; --lh-20: 22px;
+  }
+  .topbar__right { display: none; }
+  .topnav__link[href="#principles"] { display: none; }
+}
+
+@media (max-width: 400px) {
+  .topnav { display: none; }
+}
+
+/* short viewports: do not strand the head block */
+@media (max-height: 620px) {
+  :root { --main-pad-t: 24px; }
+}
+
+/* -----------------------------------------------------------------------------
+   12. EMBED MODE  (?embed)
+   For iframing into a host that already has a nav bar - a Framer page, Notion,
+   a docs shell. The host's chrome replaces this page's top bar, and the white
+   card goes edge to edge so it does not look like a page inside a page.
+
+   100dvh inside an iframe resolves to the iframe's own height, so the shell
+   fills the embed exactly with no extra work. Size the iframe to 100vw x 100vh.
+-------------------------------------------------------------------------- */
+html[data-embed] body { background: var(--c-shell); }
+
+html[data-embed] .topbar { display: none; }
+
+html[data-embed] .shell {
+  margin-inline: 0;
+  border-radius: 0;
+}
+
+/* Below the drawer breakpoint the hamburger is the only way into the nav, so
+   keep a slim bar for it and drop everything the host already shows. */
+@media (max-width: 899px) {
+  html[data-embed] { --topbar-h: 48px; }
+
+  html[data-embed] .topbar { display: flex; }
+  html[data-embed] .logo,
+  html[data-embed] .topnav,
+  html[data-embed] .topbar__right { display: none; }
+}
+
+/* -----------------------------------------------------------------------------
+   13. REDUCED MOTION
+-------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+  .sidenav__item::before { transform: none; }
+}
+
+/* -----------------------------------------------------------------------------
+   14. PRINT
+-------------------------------------------------------------------------- */
+@media print {
+  body { height: auto; overflow: visible; background: #fff; }
+  .topbar, .sidebar, .rail, .progress, .skip-link { display: none; }
+  .shell { margin: 0; border-radius: 0; }
+  .main { overflow: visible; padding: 0; }
+  .card { border: 1px solid #e2e2e2; background: none; }
+}
