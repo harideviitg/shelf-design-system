@@ -282,7 +282,7 @@ function setPage(slug, { rerender = true } = {}) {
   }
 
   state.slug = slug;
-  document.title = `${page.title} - Bracket, the Shelf design system`;
+  document.title = 'Shelf Design System';
 
   syncSidebar(slug);
   measure();
