@@ -81,7 +81,7 @@
   --t-32: 32px;  --lh-32: 38px;   /* 1:82                     - box h=38 */
 
   /* --- colour --- */
-  --c-page:        #ebebeb;  /* 1:2  */
+  --c-divider:     #ebebeb;  /* 16:306 - header/rail hairlines, new full-bleed layout */
   --c-shell:       #ffffff;  /* 1:19 */
   --c-sidebar:     #f7f7f7;  /* 1:20 */
   --c-rail:        #ffffff;  /* 1:58 */
@@ -144,7 +144,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;                    /* the app shell scrolls, not the page */
-  background: var(--c-page);
+  background: var(--c-shell);
   color: var(--c-heading);
   font-family: var(--font-sans);
   font-weight: var(--w-regular);
@@ -196,6 +196,7 @@ a { color: inherit; text-decoration: none; }
   flex: 0 0 var(--topbar-h);
   height: var(--topbar-h);
   padding-inline: var(--gutter);
+  border-bottom: 1px solid var(--c-divider);   /* 16:306 - full-bleed header hairline */
   display: grid;
   /* The centre track is sized explicitly. An `auto` track here is circular -
      it asks the search how wide it wants to be, the search answers "100% of
@@ -374,17 +375,19 @@ a { color: inherit; text-decoration: none; }
 .menu-btn[aria-expanded="true"] .menu-btn__bar:last-child  { transform: translateY(-3.25px) rotate(-45deg); }
 
 /* -----------------------------------------------------------------------------
-   5. SHELL - node 1:19
-   1440 - 2*37 = 1366 wide, 1024 - 67 = 957 tall, flush to the bottom edge.
+   5. SHELL - node 16:163 ("new layout")
+   Full-bleed: sidebar/main/rail now run edge-to-edge under the header, no
+   outer page margin and no floating rounded card (that was the old node 1:19
+   treatment). The hairline that used to be the card's implied edge is gone;
+   the header's own border-bottom (above) is what now separates chrome from
+   content.
 -------------------------------------------------------------------------- */
 .shell {
   position: relative;
   flex: 1 1 auto;
   min-height: 0;
-  margin-inline: var(--gutter);
   display: flex;
   background: var(--c-shell);
-  border-radius: var(--r-shell);
   overflow: hidden;
   isolation: isolate;
 }
@@ -636,6 +639,19 @@ a { color: inherit; text-decoration: none; }
   flex: 0 0 var(--rail-w);
   width: var(--rail-w);
   background: var(--c-rail);
+}
+
+/* Static divider - node 16:278. The "new layout" frame draws this hairline
+   at the main/rail seam regardless of scroll state, on top of (not instead
+   of) the functional scroll thumb in .progress--main below. */
+.rail::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 11px;
+  bottom: 11px;
+  width: 1px;
+  background: var(--c-divider);
 }
 
 .toc {
