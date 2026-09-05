@@ -34,12 +34,39 @@
 }
 
 /* -----------------------------------------------------------------------------
+   1b. FONT - Inter (self-hosted fallback)
+   SF Pro itself isn't shipped here (licensing - see assets/fonts/README.md),
+   so non-Apple platforms used to fall through to whatever sans the OS/browser
+   had on hand. That's why the site looked thin in Brave (Chromium honors
+   -webkit-font-smoothing) but noticeably heavier in Firefox on Windows
+   (no such override there, plus a different fallback face was resolving).
+   Self-hosting Inter's variable font means every browser renders the exact
+   same face and weights, closing that gap.
+-------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/InterVariable.woff2") format("woff2-variations"),
+       url("../fonts/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/InterVariable-Italic.woff2") format("woff2-variations"),
+       url("../fonts/InterVariable-Italic.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* -----------------------------------------------------------------------------
    2. TOKENS
 -------------------------------------------------------------------------- */
 :root {
   /* --- type --- */
   --font-sans: "SF Pro", -apple-system, BlinkMacSystemFont, "SF Pro Text",
-               "SF Pro Display", "Helvetica Neue", Inter, Arial, sans-serif;
+               "SF Pro Display", Inter, "Helvetica Neue", Arial, sans-serif;
 
   --w-light:   274;   /* node 1:83  SF Pro Light   */
   --w-regular: 400;   /* node 1:13  SF Pro Regular */

@@ -7,7 +7,18 @@ variable `.woff2` covers all three exactly.
 
 ## What ships today
 
-This folder is intentionally empty. `styles.css` declares:
+`InterVariable.woff2` and `InterVariable-Italic.woff2` are checked in (SIL Open
+Font License — safe to self-host). They're wired up as option 3 below: Inter
+sits in the `--font-sans` stack right after the SF Pro / `-apple-system`
+names, so Apple devices still get real SF for free, and everyone else gets
+the *same* self-hosted Inter instead of whatever fallback sans their browser
+picked. That's what was causing the Firefox-vs-Brave weight difference —
+Firefox on Windows doesn't honor `-webkit-font-smoothing`/`-moz-osx-font-smoothing`
+the way Chromium (Brave) does, and it wasn't even landing on the same
+fallback face. Self-hosting one variable font removes that variable.
+
+`SF-Pro.woff2` / `SF-Pro-Italic.woff2` are still not shipped here (see
+licensing below). `styles.css` declares:
 
 ```css
 @font-face { font-family: "SF Pro"; src: url("../fonts/SF-Pro.woff2") ... }
