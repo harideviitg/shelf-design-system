@@ -121,6 +121,25 @@
   --head-w:   494px;  /* 1:87 */
   --title-w:  298px;  /* 1:85 */
 
+  /* --- spacing scale - node 31:18 ("foundations - spacing and shit")
+     One 4px unit, stepped out 8 times. --s-16 and --s-24 are the file's own
+     "secondary" values (drawn at 30% opacity) - kept in the scale for the
+     rare case between tiers, never the first reach. */
+  --s-4:   4px;
+  --s-8:   8px;
+  --s-12: 12px;
+  --s-16: 16px;   /* secondary - between micro and layout, prefer a neighbor */
+  --s-20: 20px;   /* the file's marked minimum for layout spacing */
+  --s-24: 24px;   /* secondary - also the grid margin below, not general-purpose */
+  --s-28: 28px;
+  --s-32: 32px;
+
+  /* --- layout grid - node 31:18, measured against the iPhone 16/17 Pro
+     402x874pt viewport. Only this breakpoint is defined in the file. */
+  --grid-margin:  24px;
+  --grid-gutter:  12px;
+  --grid-columns: 4;
+
   /* --- motion ---
      One curve is pinned. The rest are members of the same family so that the
      whole page decelerates the same way. */
@@ -814,6 +833,147 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 720px) {
   .text-columns { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* small neutral tag for a table cell ("Micro", "Layout", "Secondary") - derived,
+   reuses .placeholder's pill without the monospace treatment */
+.tag {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: var(--r-plate);
+  background: var(--c-card);
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--c-subtitle);
+  white-space: nowrap;
+}
+.tag--dim { color: var(--c-toc-near); }
+
+/* -----------------------------------------------------------------------------
+   7b. SPACING PAGE - derived, node 31:18 ("foundations - spacing and shit")
+-------------------------------------------------------------------------- */
+
+/* the 8-step scale strip - mirrors the file's growing-square row (items-end,
+   one swatch per token, secondary tokens at 30% opacity exactly as drawn) */
+.scale {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  align-items: end;
+  gap: 10px;
+  padding-top: 8px;
+}
+.scale__item { display: flex; flex-direction: column; align-items: center; gap: 11px; }
+.scale__item[data-tier="secondary"] { opacity: 0.35; }
+.scale__swatch {
+  width: var(--sw);
+  height: var(--sw);
+  background: var(--c-item);
+  border-radius: 2px;
+}
+.scale__label {
+  font-size: var(--t-12);
+  line-height: var(--lh-12);
+  color: var(--c-subtitle);
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .scale { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 24px; }
+}
+
+/* the minimum-spacing callout - a focused 3-item version of the same swatch,
+   with the file's own bracket + "minimum use" annotation reproduced in CSS.
+   inline-flex so the container hugs the row's width, and the bracket below
+   stretches to match it exactly rather than a guessed fixed width. */
+.scale-mini { display: inline-flex; flex-direction: column; padding-top: 8px; }
+.scale-mini__row { display: flex; align-items: end; gap: 40px; }
+.scale-mini__rule {
+  align-self: stretch;
+  height: 16px;
+  margin-top: 14px;
+  border: 1px solid var(--c-thumb);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+}
+.scale-mini__tick { align-self: center; width: 1px; height: 18px; background: var(--c-thumb); }
+.scale-mini__caption {
+  align-self: center;
+  margin-top: 4px;
+  font-size: var(--t-13);
+  line-height: var(--lh-13);
+  color: var(--c-subtitle);
+}
+
+/* layout grid schematic - proportional to the real 402pt viewport: margin,
+   4 columns, 3 gutters, margin. Widths are literal fr values of the pt math,
+   so the bar is honestly to-scale, not just illustrative. */
+.grid-demo {
+  display: grid;
+  grid-template-columns:
+    24fr 79.5fr 12fr 79.5fr 12fr 79.5fr 12fr 79.5fr 24fr;
+  height: 56px;
+  border-radius: var(--r-plate);
+  overflow: hidden;
+}
+.grid-demo__margin { background: var(--c-item); opacity: 0.7; }
+.grid-demo__gutter { background: var(--c-thumb); }
+.grid-demo__col {
+  background: var(--c-card);
+  box-shadow: inset 0 0 0 1px var(--c-divider);
+}
+.grid-demo__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: var(--t-13);
+  line-height: var(--lh-13);
+  color: var(--c-subtitle);
+}
+.grid-demo__legend li { display: flex; align-items: center; gap: 7px; }
+.grid-demo__swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+.grid-demo__swatch--margin { background: var(--c-item); opacity: 0.7; }
+.grid-demo__swatch--gutter { background: var(--c-thumb); }
+.grid-demo__swatch--col    { background: var(--c-card); box-shadow: inset 0 0 0 1px var(--c-divider); }
+
+/* code panels - CSS + Swift side by side, reusing .card's surface */
+.code-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+@media (max-width: 720px) {
+  .code-grid { grid-template-columns: minmax(0, 1fr); }
+}
+.code-panel {
+  border-radius: var(--r-card);
+  background: var(--c-card);
+  overflow: hidden;
+}
+.code-panel__label {
+  padding: 12px 18px 0;
+  font-size: var(--t-12);
+  line-height: var(--lh-12);
+  color: var(--c-eyebrow);
+  text-transform: uppercase;
+}
+.code-panel pre {
+  margin: 0;
+  padding: 12px 18px 18px;
+  overflow-x: auto;
+}
+.code-panel code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 12.5px;
+  line-height: 19px;
+  color: var(--c-item);
+  white-space: pre;
+}
+.code-panel .tok-com { color: var(--c-toc-near); }
 
 /* -----------------------------------------------------------------------------
    8. RIGHT RAIL / ON THIS PAGE - node 1:58 (list 1:43)
