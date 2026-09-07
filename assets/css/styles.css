@@ -880,27 +880,55 @@ a { color: inherit; text-decoration: none; }
   .scale { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 24px; }
 }
 
-/* the minimum-spacing callout - a focused 3-item version of the same swatch,
-   with the file's own bracket + "minimum use" annotation reproduced in CSS.
-   inline-flex so the container hugs the row's width, and the bracket below
-   stretches to match it exactly rather than a guessed fixed width. */
-.scale-mini { display: inline-flex; flex-direction: column; padding-top: 8px; }
-.scale-mini__row { display: flex; align-items: end; gap: 40px; }
-.scale-mini__rule {
-  align-self: stretch;
-  height: 16px;
-  margin-top: 14px;
-  border: 1px solid var(--c-thumb);
-  border-top: none;
-  border-radius: 0 0 8px 8px;
+/* the margin-exception demo - not from the file, from a conversation
+   clarifying that the frame's "minimum use" annotation is about the 24px
+   margin's own tolerance next to a rounded element, not a spacing floor.
+   Dashed guides mark the 24px token; the pill sits 22px in on each side,
+   exactly the exception it's illustrating. */
+.optical-demo__frame {
+  position: relative;
+  height: 88px;
+  border-radius: var(--r-plate);
+  background: var(--c-card);
+  box-shadow: inset 0 0 0 1px var(--c-divider);
+  overflow: hidden;
 }
-.scale-mini__tick { align-self: center; width: 1px; height: 18px; background: var(--c-thumb); }
-.scale-mini__caption {
-  align-self: center;
-  margin-top: 4px;
+.optical-demo__guide {
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  left: var(--grid-margin);
+  border-left: 1px dashed var(--c-toc-near);
+}
+.optical-demo__guide--right { left: auto; right: var(--grid-margin); border-left: none; border-right: 1px dashed var(--c-toc-near); }
+.optical-demo__pill {
+  position: absolute;
+  top: 50%;
+  left: 22px;
+  right: 22px;
+  height: 32px;
+  transform: translateY(-50%);
+  border-radius: var(--r-pill);
+  background: var(--c-hover);
+  box-shadow: inset 0 0 0 1px var(--c-ring);
+}
+.optical-demo__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
   font-size: var(--t-13);
   line-height: var(--lh-13);
   color: var(--c-subtitle);
+}
+.optical-demo__legend li { display: flex; align-items: center; gap: 7px; }
+.optical-demo__swatch { width: 14px; height: 0; border-top: 1px dashed var(--c-toc-near); flex: none; }
+.optical-demo__swatch--pill {
+  height: 10px;
+  border-top: none;
+  border-radius: 5px;
+  background: var(--c-hover);
+  box-shadow: inset 0 0 0 1px var(--c-ring);
 }
 
 /* layout grid schematic - proportional to the real 402pt viewport: margin,

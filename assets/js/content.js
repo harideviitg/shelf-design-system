@@ -82,8 +82,10 @@ export const PAGES = {
     title: 'Spacing',
     subtitle: 'The base unit, the scale, and the grid every layout on Shelf is built from.',
     // body sourced from node 31:18 ("foundations - spacing and shit") - the
-    // scale, the minimum-use annotation, and the phone layout grid all read
-    // directly off that frame rather than measured off the screenshot.
+    // scale and the phone layout grid read directly off that frame. The
+    // Exceptions section documents a clarification given in conversation,
+    // not something drawn in the frame itself: the "minimum use" annotation
+    // there is not a spacing floor, it is about the margin's own tolerance.
     body: `
       <header class="doc__head">
         <div class="doc__titleblock">
@@ -95,7 +97,7 @@ export const PAGES = {
         </div>
         <div class="prose">
           <p>Every distance in Shelf — padding, gaps, margins, the space between an icon and its label — comes from one 4px unit. Eight steps cover it, and nothing should measure a value outside them.</p>
-          <p>The scale, the minimum-spacing rule, and the phone layout grid below come straight out of the Figma file’s spacing frame. Where it leaves something open, this page says so instead of inventing a number.</p>
+          <p>The scale, the phone layout grid, and its exceptions below come straight out of the Figma file’s spacing frame. Where it leaves something open, this page says so instead of inventing a number.</p>
         </div>
       </header>
 
@@ -138,39 +140,6 @@ export const PAGES = {
         </div>
       </section>
 
-      <section class="section" id="minimum-spacing">
-        <h2 class="section__title">Minimum spacing</h2>
-        <div class="prose">
-          <p>The file marks 20px as the floor: the smallest gap you should reach for between two sections or components. 16 and 24 sit either side of it for exactly this reason — the scale wants you at 20 by default, not drifting a few pixels off it.</p>
-        </div>
-        <div class="scale-mini">
-          <div class="scale-mini__row">
-            <div class="scale__item" data-tier="secondary"><span class="scale__swatch" style="--sw:16px"></span><span class="scale__label">16px</span></div>
-            <div class="scale__item" data-tier="core"><span class="scale__swatch" style="--sw:20px"></span><span class="scale__label">20px</span></div>
-            <div class="scale__item" data-tier="secondary"><span class="scale__swatch" style="--sw:24px"></span><span class="scale__label">24px</span></div>
-          </div>
-          <div class="scale-mini__rule"></div>
-          <div class="scale-mini__tick"></div>
-          <p class="scale-mini__caption">Minimum use</p>
-        </div>
-        <div class="cards">
-          <div class="card card--content">
-            <div class="principle">
-              <p class="principle__title">Below the floor: micro spacing</p>
-              <hr class="principle__rule">
-              <p class="principle__body">4, 8 and 12px. Inline only — the space inside a chip, between an icon and its label. Never the gap between two components.</p>
-            </div>
-          </div>
-          <div class="card card--content">
-            <div class="principle">
-              <p class="principle__title">At the floor and above: layout spacing</p>
-              <hr class="principle__rule">
-              <p class="principle__body">20, 28 and 32px. For laying out sections, components and page padding. 20 is the default — climb the scale before reaching for a one-off value.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section class="section" id="layout-grid">
         <h2 class="section__title">Layout grid</h2>
         <div class="prose">
@@ -202,7 +171,7 @@ export const PAGES = {
               </tr>
             </thead>
             <tbody>
-              <tr><td data-label="Property">Margin</td><td data-label="Value">24px</td><td data-label="Notes">--grid-margin · same value as the secondary --s-24 token above</td></tr>
+              <tr><td data-label="Property">Margin</td><td data-label="Value">24px</td><td data-label="Notes">--grid-margin · same value as the secondary --s-24 token above · flexes 1–2px beside rounded elements, see Exceptions below</td></tr>
               <tr><td data-label="Property">Gutter</td><td data-label="Value">12px</td><td data-label="Notes">--grid-gutter · same value as --s-12</td></tr>
               <tr><td data-label="Property">Columns</td><td data-label="Value">4</td><td data-label="Notes">--grid-columns</td></tr>
               <tr><td data-label="Property">Column width</td><td data-label="Value">≈79.5pt</td><td data-label="Notes">Derived: (402 − 2×24 − 3×12) ÷ 4</td></tr>
@@ -212,6 +181,41 @@ export const PAGES = {
         </div>
         <div class="prose">
           <p>Only this breakpoint is defined so far. Wider viewports — web, iPad — inherit the same margin/gutter/column relationship until the file specifies otherwise.</p>
+        </div>
+      </section>
+
+      <section class="section" id="exceptions">
+        <h2 class="section__title">Exceptions</h2>
+        <div class="prose">
+          <p>Not every margin lands on 24px exactly. Rounded elements — the search bar is the clearest case — sit slightly inside the token: 23px from the edge on each side, sometimes 22px. A rounded corner carries less visual weight than a sharp one, so a strict 24px gap next to it reads as too generous. Pulling it in a pixel or two makes it read as even.</p>
+          <p>This is an accepted, deliberate exception — not a bug to fix and not a new token to add. It only applies where a rounded edge sits flush against the margin. Everything else still measures 24px on the nose.</p>
+        </div>
+        <div class="optical-demo">
+          <div class="optical-demo__frame">
+            <div class="optical-demo__guide"></div>
+            <div class="optical-demo__guide optical-demo__guide--right"></div>
+            <div class="optical-demo__pill"></div>
+          </div>
+          <ul class="optical-demo__legend">
+            <li><span class="optical-demo__swatch"></span>24px — the margin token</li>
+            <li><span class="optical-demo__swatch optical-demo__swatch--pill"></span>22–23px — effective gap beside a rounded element</li>
+          </ul>
+        </div>
+        <div class="cards">
+          <div class="card card--content">
+            <div class="principle">
+              <p class="principle__title">Reach for it</p>
+              <hr class="principle__rule">
+              <p class="principle__body">A rounded pill or button sits flush against the margin — the search bar, a floating action button, a heavily rounded card. Nudge it in a pixel or two until it looks even, never more.</p>
+            </div>
+          </div>
+          <div class="card card--content">
+            <div class="principle">
+              <p class="principle__title">Don’t reach for it</p>
+              <hr class="principle__rule">
+              <p class="principle__body">Sharp-edged content — text, a table, a straight-edged card. These hold 24px exactly. If one needs nudging, the element is the problem, not the margin.</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -227,7 +231,7 @@ export const PAGES = {
 --s-8:   8px;
 --s-12: 12px;
 --s-16: 16px;  <span class="tok-com">/* secondary */</span>
---s-20: 20px;  <span class="tok-com">/* minimum */</span>
+--s-20: 20px;
 --s-24: 24px;  <span class="tok-com">/* secondary, = grid margin */</span>
 --s-28: 28px;
 --s-32: 32px;
@@ -243,7 +247,7 @@ export const PAGES = {
     static let s8:  CGFloat = 8
     static let s12: CGFloat = 12
     static let s16: CGFloat = 16  <span class="tok-com">// secondary</span>
-    static let s20: CGFloat = 20  <span class="tok-com">// minimum</span>
+    static let s20: CGFloat = 20
     static let s24: CGFloat = 24  <span class="tok-com">// secondary</span>
     static let s28: CGFloat = 28
     static let s32: CGFloat = 32
