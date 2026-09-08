@@ -154,33 +154,45 @@
 
 /* -----------------------------------------------------------------------------
    2b. DARK THEME - derived, not in the source Figma file.
-   Same structure, inverted for legibility: near-black shell/sidebar, light ink,
-   everything else (radii, spacing, motion) untouched.
+   True black, Vercel-style: shell/sidebar/rail all sit on pure #000, panels
+   are told apart by a hairline border (--c-divider) rather than a lighter
+   fill, and ink runs closer to pure white for the contrast that look wants.
 -------------------------------------------------------------------------- */
 :root[data-theme="dark"] {
-  --c-divider:     #2a2a2a;
-  --c-shell:       #17171a;
-  --c-sidebar:     #1c1c1f;
-  --c-rail:        #17171a;
-  --c-card:        #222225;
+  --c-divider:     #272727;
+  --c-shell:       #000000;
+  --c-sidebar:     #000000;
+  --c-rail:        #000000;
+  --c-card:        #0a0a0a;
 
-  --c-topnav:      #9a9a9a;
+  --c-topnav:      #a1a1a1;
   --c-eyebrow:     #8a8a8a;
-  --c-item:        #b7b7b7;
-  --c-heading:     #ededed;
-  --c-subtitle:    #a8a8a8;
+  --c-item:        #b4b4b4;
+  --c-heading:     #fafafa;
+  --c-subtitle:    #a1a1a1;
   --c-toc-near:    #8f8f8f;
-  --c-toc-far:     #45454a;
-  --c-thumb:       #3a3a3f;
+  --c-toc-far:     #404040;
+  --c-thumb:       #333333;
 
   --c-item-strong: #ffffff;
-  --c-item-strong-hover: #d9d9d9;
-  --c-hover:       rgb(255 255 255 / 0.06);
-  --c-current:     rgb(255 255 255 / 0.10);
-  --c-focus:       #b7b7b7;
-  --c-ring:        rgb(255 255 255 / 0.12);
+  --c-item-strong-hover: #d4d4d4;
+  --c-hover:       rgb(255 255 255 / 0.07);
+  --c-current:     rgb(255 255 255 / 0.11);
+  --c-focus:       #ffffff;
+  --c-ring:        rgb(255 255 255 / 0.14);
 
   color-scheme: dark;
+}
+
+/* Surfaces that lean on --c-card for definition (a subtle fill isn't enough
+   against pure black on its own) get a hairline border in dark mode only -
+   light mode already reads fine off the card/shell fill difference alone. */
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .stub,
+:root[data-theme="dark"] .placeholder,
+:root[data-theme="dark"] .tag,
+:root[data-theme="dark"] .code-panel {
+  box-shadow: inset 0 0 0 1px var(--c-divider);
 }
 
 /* -----------------------------------------------------------------------------
