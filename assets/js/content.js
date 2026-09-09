@@ -42,14 +42,6 @@ export const PAGES = {
     // body is hydrated from index.html at boot
   },
 
-  installation: {
-    group: 'Foundations',
-    top: 'Foundation',
-    title: 'Installation',
-    subtitle: SUBTITLE,
-    stub: pending('Installation'),
-  },
-
   typography: {
     group: 'Foundations',
     top: 'Foundation',
@@ -64,16 +56,6 @@ export const PAGES = {
     title: 'Colors',
     subtitle: SUBTITLE,
     stub: pending('Colors'),
-  },
-
-  'dark-theme': {
-    group: 'Foundations',
-    top: 'Foundation',
-    // Label kept exactly as it reads in the file (node 1:88). It is a typo for
-    // "Dark theme" - fix it in Figma and this follows.
-    title: 'Cark theme',
-    subtitle: SUBTITLE,
-    stub: pending('Dark theme'),
   },
 
   spacing: {
