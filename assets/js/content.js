@@ -53,9 +53,126 @@ export const PAGES = {
   colors: {
     group: 'Foundations',
     top: 'Foundation',
-    title: 'Colors',
-    subtitle: SUBTITLE,
-    stub: pending('Colors'),
+    title: 'Colors and shadows',
+    subtitle: 'The palette, the whites, and the shadows a card is allowed to carry.',
+    // body sourced from node 34:79 ("some more docs guidelines") - a scratch
+    // sheet of swatches and designer notes, not a polished palette frame.
+    // Fills are read off each rectangle; the notes are quoted close to verbatim
+    // rather than smoothed into something more official than the file is.
+    body: `
+      <header class="doc__head">
+        <div class="doc__titleblock">
+          <p class="eyebrow">Foundations</p>
+          <div class="doc__titles">
+            <h1 class="doc__title">Colors and shadows</h1>
+            <p class="doc__subtitle">The palette, the whites, and the shadows a card is allowed to carry.</p>
+          </div>
+        </div>
+        <div class="prose">
+          <p>This page comes from a scratch sheet in the Figma file, <code>&quot;some more docs guidelines&quot;</code>, rather than a finished palette frame. It reads more like sticky notes than a spec: a handful of swatches, a few call-outs about when a shadow does or doesn't apply. That is reflected here as-is, not tidied into something the file doesn't actually claim.</p>
+        </div>
+      </header>
+
+      <section class="section" id="palette">
+        <h2 class="section__title">Palette</h2>
+        <div class="prose">
+          <p>Five swatches, each labelled the way the file labels them, including &quot;primary color actually&quot;, which reads like a correction mid-thought more than a token name.</p>
+        </div>
+        <div class="sampleset">
+          <div class="sample">
+            <span class="sample__box" style="background:#000000"></span>
+            <span class="sample__label">Almost text colors</span>
+            <span class="sample__value">#000000</span>
+          </div>
+          <div class="sample">
+            <span class="sample__box" style="background:#5f5f5f"></span>
+            <span class="sample__label">Primary color actually</span>
+            <span class="sample__value">#5f5f5f</span>
+          </div>
+          <div class="sample">
+            <span class="sample__box" style="background:#efefef; box-shadow: inset 0 0 0 1px #cccccc"></span>
+            <span class="sample__label">Empty state color</span>
+            <span class="sample__value">#efefef</span>
+          </div>
+          <div class="sample">
+            <span class="sample__box" style="background:#808080"></span>
+            <span class="sample__label">Secondary color</span>
+            <span class="sample__value">#808080</span>
+          </div>
+          <div class="sample">
+            <span class="sample__box" style="background:#cfcfcf"></span>
+            <span class="sample__label">Secondary color</span>
+            <span class="sample__value">#cfcfcf</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="types-of-white">
+        <h2 class="section__title">Types of white</h2>
+        <div class="prose">
+          <p>&quot;These things will be used according to the type of card we are showcasing&quot;: the file doesn't say which white goes with which card, only that the choice is deliberate per-card, not one white used everywhere. The note beside it: &quot;some buttons may or maynot have shadows at all.&quot;</p>
+        </div>
+        <div class="sampleset">
+          <div class="sample">
+            <span class="sample__box" style="background:#f6f6f6"></span>
+            <span class="sample__value">#f6f6f6</span>
+          </div>
+          <div class="sample">
+            <span class="sample__box" style="background:#fafafa"></span>
+            <span class="sample__value">#fafafa</span>
+          </div>
+          <div class="sample">
+            <span class="sample__box" style="background:#fbfbfb"></span>
+            <span class="sample__value">#fbfbfb</span>
+          </div>
+          <div class="sample">
+            <span class="sample__box" style="background:#ffffff"></span>
+            <span class="sample__value">#ffffff</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="shadows">
+        <h2 class="section__title">Shadows</h2>
+        <div class="prose">
+          <p>Four named presets sit in the file's shadow sheet, each a five-layer drop shadow. &quot;Far&quot; vs &quot;close&quot; is how far the shadow throws; &quot;subtle&quot; vs &quot;harsh&quot; is how dark it gets. The file's own caveat: &quot;if you are unable to replicate this shadow in web, just put the image properly.&quot; These four reproduce cleanly in CSS, so that fallback isn't needed here.</p>
+        </div>
+        <div class="cards">
+          <div class="card" style="box-shadow:0 26px 57px 0 rgba(0,0,0,0.05),0 103px 103px 0 rgba(0,0,0,0.04),0 233px 140px 0 rgba(0,0,0,0.03),0 414px 166px 0 rgba(0,0,0,0.01)"></div>
+          <div class="card" style="box-shadow:0 3px 6px 0 rgba(0,0,0,0.04),0 11px 11px 0 rgba(0,0,0,0.03),0 25px 15px 0 rgba(0,0,0,0.02),0 45px 18px 0 rgba(0,0,0,0.01)"></div>
+          <div class="card" style="box-shadow:0 2px 4px 0 rgba(0,0,0,0.01),0 8px 8px 0 rgba(0,0,0,0.01),0 17px 10px 0 rgba(0,0,0,0.01)"></div>
+          <div class="card" style="box-shadow:0 1px 2px 0 rgba(0,0,0,0.05),0 3px 3px 0 rgba(0,0,0,0.04),0 7px 4px 0 rgba(0,0,0,0.03),0 13px 5px 0 rgba(0,0,0,0.01)"></div>
+        </div>
+        <ul class="grid-demo__legend">
+          <li><span class="tag">Far subtle</span></li>
+          <li><span class="tag">Far harsh</span></li>
+          <li><span class="tag">Close subtle</span></li>
+          <li><span class="tag">Close harsh</span></li>
+        </ul>
+      </section>
+
+      <section class="section" id="materials">
+        <h2 class="section__title">Materials: blur</h2>
+        <div class="prose">
+          <p>&quot;Shaders: the bottom part where the navdock exists, is blurred and paled out.&quot; The file asked directly for this to be shown rather than described: &quot;I need an image like this also in the site documentation so that people can see about the blur.&quot;</p>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table data-table--media">
+            <thead>
+              <tr>
+                <th scope="col">Reference</th>
+                <th scope="col">What it shows</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Reference"><img class="thumb" src="assets/img/navdock-blur.png" alt="Shelf app navigation dock over blurred, paled-out content" width="402" height="245"></td>
+                <td data-label="What it shows">The nav dock sits over a frosted, dimmed version of the content behind it, not a flat opaque bar. Everything below the dock stays legible in outline, just paled and softened, so the dock always reads as floating above the page rather than cut into it.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>`,
   },
 
   spacing: {
@@ -248,9 +365,68 @@ enum Grid {
   radius: {
     group: 'Foundations',
     top: 'Foundation',
-    title: 'Radius',
-    subtitle: SUBTITLE,
-    stub: pending('Radius'),
+    title: 'Radius and strokes',
+    subtitle: 'Stroke widths and corner radii, straight off the same scratch sheet as Colors.',
+    // body sourced from node 34:79 ("some more docs guidelines"), the same
+    // scratch sheet as the Colors page. "60% apple" is the file's own
+    // shorthand and is quoted rather than reinterpreted - it isn't spelled
+    // out what the 60% or "apple" refer to.
+    body: `
+      <header class="doc__head">
+        <div class="doc__titleblock">
+          <p class="eyebrow">Foundations</p>
+          <div class="doc__titles">
+            <h1 class="doc__title">Radius and strokes</h1>
+            <p class="doc__subtitle">Stroke widths and corner radii, straight off the same scratch sheet as Colors.</p>
+          </div>
+        </div>
+        <div class="prose">
+          <p>Same source as the <a href="#/colors">Colors</a> page: the file's &quot;some more docs guidelines&quot; sheet, not a dedicated radius frame. Two groups sit side by side there — stroking and radius — and are kept side by side here.</p>
+        </div>
+      </header>
+
+      <section class="section" id="stroking">
+        <h2 class="section__title">Stroking</h2>
+        <div class="prose">
+          <p>Two widths, and the file is specific about when each applies.</p>
+        </div>
+        <div class="sampleset">
+          <div class="sample">
+            <span class="sample__box" style="background:#ffffff; box-shadow: inset 0 0 0 1px #cfcfcf"></span>
+            <span class="sample__label">1px stroke</span>
+            <span class="sample__value">very common</span>
+          </div>
+          <div class="sample">
+            <span class="sample__box" style="background:repeating-conic-gradient(#e9e9e9 0% 25%, #ffffff 0% 50%) 0 0 / 12px 12px; box-shadow: inset 0 0 0 2px #cfcfcf"></span>
+            <span class="sample__label">2px stroke</span>
+            <span class="sample__value">for media only</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="radius">
+        <h2 class="section__title">Radius</h2>
+        <div class="prose">
+          <p>Three values, each annotated &quot;60% apple&quot; in the file. That phrase is carried over verbatim rather than guessed at — it isn't defined elsewhere in the file whether it means an opacity, a platform reference, or something else.</p>
+        </div>
+        <div class="sampleset">
+          <div class="sample">
+            <span class="sample__box" style="background:#5f5f5f; border-radius:16px 0 0 0"></span>
+            <span class="sample__label">16px</span>
+            <span class="sample__value">&quot;60% apple&quot;</span>
+          </div>
+          <div class="sample">
+            <span class="sample__box" style="background:#d9d9d9; border-radius:999px"></span>
+            <span class="sample__label">999px</span>
+            <span class="sample__value">&quot;60% apple&quot;</span>
+          </div>
+          <div class="sample">
+            <span class="sample__box" style="background:#d9d9d9; border-radius:8px; height:32px"></span>
+            <span class="sample__label">8px</span>
+            <span class="sample__value">&quot;60% apple&quot;</span>
+          </div>
+        </div>
+      </section>`,
   },
 
   tokens: {
@@ -259,6 +435,160 @@ enum Grid {
     title: 'Tokens',
     subtitle: SUBTITLE,
     stub: pending('Tokens'),
+  },
+
+  'button-groups': {
+    group: 'Components',
+    top: 'Component',
+    title: 'Button groups',
+    subtitle: 'A live, draggable reference for the button-group component, exactly as the file draws it.',
+    // body sourced from node 83:354 ("button-group"), a 3-variant component
+    // set keyed on "Property 1". Colors/radius/shadows below are the file's
+    // own literal values, not this site's tokens: each is a picture of the
+    // real iOS component, so none of them shift with light or dark mode.
+    // Re-fetched after the variants were renamed in the file - this is a
+    // snapshot, not a live connection, see the prose below.
+    body: `
+      <header class="doc__head">
+        <div class="doc__titleblock">
+          <p class="eyebrow">Components</p>
+          <div class="doc__titles">
+            <h1 class="doc__title">Button groups</h1>
+            <p class="doc__subtitle">A live, draggable reference for the button-group component, exactly as the file draws it.</p>
+          </div>
+        </div>
+        <div class="prose">
+          <p>The file's <code>button-group</code> component has three variants, switched below by whatever their &quot;Property 1&quot; value is named at the time this page was last pulled from the file: a pill button with a fixed 43px icon button beside it, two pills in a row, and two pills in a column.</p>
+          <p>Colors, radius and shadows are the file's literal values, not this site's own tokens: this is a picture of the iOS component, not a restyled copy of it, so it doesn't shift with light or dark mode and it doesn't react to a mouse the way a web button would. Drag the canvas if you like, it always drifts back to center - there's only one thing to look at, so there's nowhere to lose it.</p>
+          <p>This is a snapshot, not a live embed: it was pulled from the file once and hand-turned into the HTML/CSS below. Renaming a variant, recoloring a fill, resizing a frame - none of that reaches this page on its own. Someone has to come back and re-pull it, the way this update just did after the variants got renamed.</p>
+        </div>
+      </header>
+
+      <section class="section" id="button-group">
+        <h2 class="section__title">Button group</h2>
+        <div class="fig-embed" data-role="fig-embed">
+          <div class="fig-embed__toolbar">
+            <div class="fig-embed__tabs" role="tablist" aria-label="Button group preview">
+              <button class="fig-embed__tab" type="button" role="tab" id="bg-tab-preview" aria-controls="bg-panel-preview" data-tab="preview" aria-selected="true">Preview</button>
+              <button class="fig-embed__tab" type="button" role="tab" id="bg-tab-code" aria-controls="bg-panel-code" data-tab="code" aria-selected="false">Code</button>
+            </div>
+            <label class="fig-embed__property">
+              <span class="fig-embed__property-label">Property 1</span>
+              <select class="fig-embed__property-select" data-variant-select>
+                <option value="combo">button icon-button combo</option>
+                <option value="horizontal">horizontal stack</option>
+                <option value="vertical">vertical stack</option>
+              </select>
+            </label>
+          </div>
+          <div class="fig-embed__canvas" id="bg-panel-preview" role="tabpanel" aria-labelledby="bg-tab-preview" data-panel="preview">
+            <div class="fig-embed__stage">
+              <div class="btn-group" data-variant-view="combo" aria-hidden="true">
+                <span class="btn-group__pill btn-group__pill--neutral">Button</span>
+                <span class="btn-group__icon"><img src="assets/img/icon-hex-gear.svg" alt="" width="24" height="24"></span>
+              </div>
+              <div class="btn-group" data-variant-view="horizontal" hidden aria-hidden="true">
+                <span class="btn-group__pill btn-group__pill--dark">Button</span>
+                <span class="btn-group__pill btn-group__pill--light">Button</span>
+              </div>
+              <div class="btn-group btn-group--col" data-variant-view="vertical" hidden aria-hidden="true">
+                <span class="btn-group__pill btn-group__pill--dark">Button</span>
+                <span class="btn-group__pill btn-group__pill--light">Button</span>
+              </div>
+            </div>
+          </div>
+          <div class="fig-embed__code" id="bg-panel-code" role="tabpanel" aria-labelledby="bg-tab-code" data-panel="code" hidden>
+            <pre data-variant-view="combo"><code>HStack(spacing: 8) {
+    Button("Button") {}
+        .font(.system(size: 17))
+        .foregroundColor(.black)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(Color(hex: "FBFBFB"))
+        .clipShape(Capsule())
+        .overlay(Capsule().stroke(.white, lineWidth: 1))
+        .shadow(color: .black.opacity(0.05), radius: 28.5, y: 26)
+        .shadow(color: .black.opacity(0.04), radius: 51.5, y: 103)
+        .shadow(color: .black.opacity(0.03), radius: 70,   y: 233)
+        .shadow(color: .black.opacity(0.01), radius: 83,   y: 414)
+
+    Button {} label: {
+        Image(systemName: "hexagon")
+            .overlay(
+                Circle().stroke(.black, lineWidth: 1.5).frame(width: 9, height: 9)
+            )
+    }
+    .frame(width: 43, height: 43)
+    .background(Color(hex: "FBFBFB"))
+    .clipShape(Circle())
+    .overlay(Circle().stroke(.white, lineWidth: 1))
+    .shadow(color: .black.opacity(0.078), radius: 14.7, y: 8)
+    .shadow(color: .black.opacity(0.031), radius: 21.5, y: 71)
+    .shadow(color: .black.opacity(0.012), radius: 25,   y: 126)
+}
+.frame(width: 220)</code></pre>
+            <pre data-variant-view="horizontal" hidden><code>HStack(spacing: 8) {
+    Button("Button") {}
+        .font(.system(size: 17, weight: .medium))
+        .foregroundColor(.white)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(Color.black)
+        .clipShape(Capsule())
+        .overlay(Capsule().stroke(.white, lineWidth: 1))
+        .shadow(color: .black.opacity(0.05), radius: 28.5, y: 26)
+        .shadow(color: .black.opacity(0.04), radius: 51.5, y: 103)
+        .shadow(color: .black.opacity(0.03), radius: 70,   y: 233)
+        .shadow(color: .black.opacity(0.01), radius: 83,   y: 414)
+
+    Button("Button") {}
+        .font(.system(size: 17))
+        .foregroundColor(.black)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(Color(hex: "EFEFEF"))
+        .clipShape(Capsule())
+        .overlay(Capsule().stroke(Color(hex: "CFCFCF"), lineWidth: 1))
+        .shadow(color: .black.opacity(0.05), radius: 28.5, y: 26)
+        .shadow(color: .black.opacity(0.04), radius: 51.5, y: 103)
+        .shadow(color: .black.opacity(0.03), radius: 70,   y: 233)
+        .shadow(color: .black.opacity(0.01), radius: 83,   y: 414)
+}
+.frame(width: 220)</code></pre>
+            <pre data-variant-view="vertical" hidden><code>VStack(alignment: .leading, spacing: 8) {
+    Button("Button") {}
+        .font(.system(size: 17, weight: .medium))
+        .foregroundColor(.white)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(Color.black)
+        .clipShape(Capsule())
+        .overlay(Capsule().stroke(.white, lineWidth: 1))
+        .shadow(color: .black.opacity(0.05), radius: 28.5, y: 26)
+        .shadow(color: .black.opacity(0.04), radius: 51.5, y: 103)
+        .shadow(color: .black.opacity(0.03), radius: 70,   y: 233)
+        .shadow(color: .black.opacity(0.01), radius: 83,   y: 414)
+
+    Button("Button") {}
+        .font(.system(size: 17))
+        .foregroundColor(.black)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(Color(hex: "EFEFEF"))
+        .clipShape(Capsule())
+        .overlay(Capsule().stroke(Color(hex: "CFCFCF"), lineWidth: 1))
+        .shadow(color: .black.opacity(0.05), radius: 28.5, y: 26)
+        .shadow(color: .black.opacity(0.04), radius: 51.5, y: 103)
+        .shadow(color: .black.opacity(0.03), radius: 70,   y: 233)
+        .shadow(color: .black.opacity(0.01), radius: 83,   y: 414)
+}
+.frame(width: 220)</code></pre>
+          </div>
+        </div>
+        <div class="prose">
+          <p>The pill shadow throughout is the same &quot;far subtle&quot; preset documented on <a class="text-link" href="#/colors#shadows">Colors and shadows</a>. The combo variant's icon button is the one exception: its own tighter stack, four layers instead of five, thrown a shorter distance.</p>
+        </div>
+      </section>`,
   },
 
   'coming-soon': {

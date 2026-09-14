@@ -11,6 +11,7 @@
 
 import { PAGES, DEFAULT_PAGE, renderPage } from './content.js';
 import { initSearch } from './search.js';
+import { initFigEmbeds } from './fig-embed.js';
 
 /* Where in the viewport a section counts as "the one you are reading". */
 const READ_LINE = 0.30;
@@ -281,6 +282,7 @@ function setPage(slug, { rerender = true } = {}) {
     if (html == null) return false;
     el.doc.innerHTML = html;
     restartAnimation(el.doc);
+    initFigEmbeds(el.doc);
     el.main.scrollTop = 0;
   }
 

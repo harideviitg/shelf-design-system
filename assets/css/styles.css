@@ -1016,6 +1016,63 @@ a { color: inherit; text-decoration: none; }
 .code-panel .tok-com { color: var(--c-toc-near); }
 
 /* -----------------------------------------------------------------------------
+   7c. SAMPLE SWATCHES - shared by Colors & Radius, node 34:79
+   ("some more docs guidelines"). This section of the file is annotation, not
+   a drawn layout - a designer's scratch sheet of swatches and notes. Fills
+   below are read straight off each rectangle; the "60% apple" wording on the
+   radius swatches is the file's own shorthand and is quoted as-is rather than
+   reinterpreted.
+-------------------------------------------------------------------------- */
+.sampleset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 28px;
+  padding-top: 4px;
+}
+.sample { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.sample__box {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  box-shadow: inset 0 0 0 1px var(--c-divider);
+}
+.sample__label {
+  font-size: var(--t-13);
+  line-height: var(--lh-13);
+  font-weight: var(--w-medium);
+  color: var(--c-heading);
+}
+.sample__value {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+  color: var(--c-subtitle);
+}
+
+/* reference-image row - a .data-table row whose first cell is a screenshot
+   rather than text (the navdock blur image the file asks be shown, not just
+   described). Same bordered/light table as everywhere else on the site.
+   The column gets an explicit pixel width (not the usual "width:1% +
+   nowrap" shrink-to-fit trick - that trick sizes a column off its content's
+   preferred width, which text has and an image with max-width:100% does
+   not, so it was collapsing the column down to almost nothing and taking
+   the image with it). A row that doesn't fit narrower viewports scrolls
+   inside .table-wrap like every other table here, it never shrinks the photo. */
+/* the cell's own background, not just the image's: without this the padding
+   between the photo and the table border is bare page background, which in
+   dark mode is pure black - reading as a black mat around a light photo. A
+   card tone matches how every other surface on the site sits against the
+   shell instead of leaving that ring exposed. */
+.data-table--media td:first-child { width: 320px; background: var(--c-card); }
+.thumb {
+  display: block;
+  width: 320px;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--r-plate);
+  box-shadow: inset 0 0 0 1px var(--c-divider);
+}
+
+/* -----------------------------------------------------------------------------
    8. RIGHT RAIL / ON THIS PAGE - node 1:58 (list 1:43)
    The file draws three states and they are distance-based, not binary:
      active   #404040  14px  18px rule   (1:47)
@@ -1200,6 +1257,218 @@ a { color: inherit; text-decoration: none; }
 /* short viewports: do not strand the head block */
 @media (max-height: 620px) {
   :root { --main-pad-t: 24px; }
+}
+
+/* -----------------------------------------------------------------------------
+   11b. NICE SCROLLBARS - derived
+   Every place on the site that can overflow (a wide table, a code block, the
+   component-preview code panel) gets the same thin, quiet scrollbar instead
+   of the OS default - a restyled native scrollbar, not the JS-driven pill
+   used for the main/sidebar rails, but the same idea: thin, rounded, and out
+   of the way until it's needed.
+-------------------------------------------------------------------------- */
+.table-wrap,
+.code-panel pre,
+.fig-embed__code {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-thumb) transparent;
+}
+.table-wrap::-webkit-scrollbar,
+.code-panel pre::-webkit-scrollbar,
+.fig-embed__code::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.table-wrap::-webkit-scrollbar-track,
+.code-panel pre::-webkit-scrollbar-track,
+.fig-embed__code::-webkit-scrollbar-track {
+  background: transparent;
+}
+.table-wrap::-webkit-scrollbar-thumb,
+.code-panel pre::-webkit-scrollbar-thumb,
+.fig-embed__code::-webkit-scrollbar-thumb {
+  background: var(--c-thumb);
+  border-radius: var(--r-pill);
+}
+.table-wrap:hover::-webkit-scrollbar-thumb,
+.code-panel pre:hover::-webkit-scrollbar-thumb,
+.fig-embed__code:hover::-webkit-scrollbar-thumb {
+  background: var(--c-toc-near);
+}
+
+/* -----------------------------------------------------------------------------
+   11c. COMPONENT PREVIEW (fig-embed) - derived, node 83:373 ("button-group",
+   the variant named "Property 1=Frame 1321316986"). A small stand-in for
+   Figma's own embed card: a bordered surface, a Preview/Code switch, and a
+   canvas the component sits on. Simple on purpose - no dot-grid zoom, no pan
+   controls, just enough of the feel to read as "a design, dropped in".
+-------------------------------------------------------------------------- */
+.fig-embed {
+  border: 1px solid var(--c-divider);
+  border-radius: var(--r-card);
+  background: var(--c-shell);
+  overflow: hidden;
+}
+
+.fig-embed__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px;
+  border-bottom: 1px solid var(--c-divider);
+  background: var(--c-card);
+}
+
+.fig-embed__tabs { display: flex; gap: 4px; }
+
+.fig-embed__tab {
+  padding: 6px 14px;
+  border-radius: var(--r-plate);
+  font-size: var(--t-13);
+  line-height: var(--lh-13);
+  color: var(--c-subtitle);
+  transition: background-color var(--dur-hover) var(--ease-pin),
+              color var(--dur-hover) var(--ease-pin);
+}
+.fig-embed__tab:hover { color: var(--c-item-strong); }
+.fig-embed__tab[aria-selected="true"] {
+  background: var(--c-hover);
+  color: var(--c-item-strong);
+  font-weight: var(--w-medium);
+}
+
+/* property control - a label + native select, the same shape as Figma's own
+   instance editor ("Property 1" -> a value), just drawn in the site's own
+   card/plate language instead of Figma's dark panel. Lives in the toolbar,
+   not over the artwork, so it never competes with the component itself. */
+.fig-embed__property {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 2px;
+}
+.fig-embed__property-label {
+  font-size: var(--t-13);
+  line-height: var(--lh-13);
+  color: var(--c-subtitle);
+  white-space: nowrap;
+}
+.fig-embed__property-select {
+  appearance: none;
+  max-width: 168px;
+  padding: 5px 26px 5px 10px;
+  border: 1px solid var(--c-divider);
+  border-radius: var(--r-plate);
+  background: var(--c-shell) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 9px center;
+  font-size: var(--t-13);
+  line-height: var(--lh-13);
+  color: var(--c-item-strong);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: border-color var(--dur-hover) var(--ease-pin);
+}
+.fig-embed__property-select:hover { border-color: var(--c-item-strong); }
+
+/* the draggable canvas - overflow is hidden and panning is a transform, so
+   there is never a scrollbar here to begin with, nice or otherwise. */
+.fig-embed__canvas {
+  position: relative;
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  background-color: var(--c-card);
+  background-image: radial-gradient(circle, var(--c-divider) 1px, transparent 0);
+  background-size: 22px 22px;
+  background-position: center;
+}
+.fig-embed__canvas:active { cursor: grabbing; }
+.fig-embed__canvas[hidden] { display: none; }
+
+.fig-embed__stage.is-returning {
+  transition: transform var(--dur-2) var(--ease-2);
+}
+
+.fig-embed__code {
+  margin: 0;
+  padding: 18px 20px;
+  max-height: 260px;
+  overflow: auto;
+}
+.fig-embed__code code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 12.5px;
+  line-height: 19px;
+  color: var(--c-item);
+  white-space: pre;
+}
+
+/* the component itself - literal colors and shadows straight from the file,
+   never the site's own theme tokens. It is a picture of what the real iOS
+   control looks like, not a themed copy, so nothing here changes with
+   light/dark mode, and nothing here has a :hover - the real thing doesn't
+   have a mouse to hover with. Three variants, one per "Property 1" value:
+   combo (pill + icon button), horizontal stack (two pills, a row), vertical
+   stack (two pills, a column) - see the toggle above. */
+.btn-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 220px;
+  pointer-events: none;
+}
+.btn-group[hidden] { display: none; }
+.btn-group--col { flex-direction: column; align-items: flex-start; }
+
+.btn-group__pill {
+  flex: 1 1 0%;
+  min-width: 0;
+  padding: 12px 24px;
+  border-radius: var(--r-pill);
+  box-shadow:
+    0 26px 57px 0 rgba(0, 0, 0, 0.05),
+    0 103px 103px 0 rgba(0, 0, 0, 0.04),
+    0 233px 140px 0 rgba(0, 0, 0, 0.03),
+    0 414px 166px 0 rgba(0, 0, 0, 0.01);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: normal;
+  text-align: center;
+  white-space: nowrap;
+}
+/* a column stacks full-width pills, it doesn't grow them along a row */
+.btn-group--col .btn-group__pill { flex: none; width: 100%; }
+
+.btn-group__pill--neutral { border: 1px solid #ffffff; background: #fbfbfb; color: #000000; font-weight: 400; }
+.btn-group__pill--dark    { border: 1px solid #ffffff; background: #000000; color: #ffffff; font-weight: var(--w-medium); }
+.btn-group__pill--light   { border: 1px solid #cfcfcf; background: #efefef; color: #000000; font-weight: 400; }
+
+.btn-group__icon {
+  flex: none;
+  width: 43px;
+  height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ffffff;
+  border-radius: var(--r-pill);
+  background: #fbfbfb;
+  box-shadow:
+    0 8px 29.4px 0 rgba(0, 0, 0, 0.078),
+    0 71px 43px 0 rgba(0, 0, 0, 0.031),
+    0 126px 50px 0 rgba(0, 0, 0, 0.012);
+}
+.btn-group__icon img { width: 24px; height: 24px; display: block; }
+
+@media (max-width: 560px) {
+  .fig-embed__canvas { height: 220px; }
 }
 
 /* -----------------------------------------------------------------------------
